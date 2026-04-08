@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -18,7 +18,7 @@ import Image from "next/image";
 import * as z from "zod";
 import { ChangeEvent, useState } from "react";
 import { isBase64Image } from "@/lib/utils";
-import { useUploadThing } from '@/lib/uploadthing';
+import { useUploadThing } from "@/lib/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -46,11 +46,14 @@ export default function AccountProfile({ user, btnTitle }: Props) {
       profile_photo: user?.image || "",
       name: user?.name || "",
       username: user?.username || "",
-      bio: user?.bio || ""
-    }
-  })
+      bio: user?.bio || "",
+    },
+  });
 
-  const handleImage = (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
+  const handleImage = (
+    e: ChangeEvent<HTMLInputElement>,
+    fieldChange: (value: string) => void,
+  ) => {
     e.preventDefault();
 
     const fileReader = new FileReader();
@@ -60,17 +63,17 @@ export default function AccountProfile({ user, btnTitle }: Props) {
 
       setFiles(Array.from(e.target.files));
 
-      if (!file.type.includes('image')) return;
+      if (!file.type.includes("image")) return;
 
       fileReader.onload = async (event) => {
-        const imageDataUrl = event.target?.result?.toString() || '';
+        const imageDataUrl = event.target?.result?.toString() || "";
 
         fieldChange(imageDataUrl);
-      }
+      };
 
       fileReader.readAsDataURL(file);
     }
-  }
+  };
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
     const blob = values.profile_photo;
@@ -78,7 +81,7 @@ export default function AccountProfile({ user, btnTitle }: Props) {
     const hasImageChanged = isBase64Image(blob);
 
     if (hasImageChanged) {
-      const imgRes = await startUpload(files)
+      const imgRes = await startUpload(files);
 
       if (imgRes && imgRes[0].fileUrl) {
         values.profile_photo = imgRes[0].fileUrl;
@@ -91,15 +94,15 @@ export default function AccountProfile({ user, btnTitle }: Props) {
       name: values.name,
       bio: values.bio,
       image: values.profile_photo,
-      path: pathname
+      path: pathname,
     });
 
-    if (pathname === '/profile/edit') {
+    if (pathname === "/profile/edit") {
       router.back();
     } else {
-      router.push('/');
+      router.push("/");
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -107,6 +110,7 @@ export default function AccountProfile({ user, btnTitle }: Props) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col justify-start gap-10"
       >
+        {/* profile image field */}
         <FormField
           control={form.control}
           name="profile_photo"
@@ -145,7 +149,7 @@ export default function AccountProfile({ user, btnTitle }: Props) {
             </FormItem>
           )}
         />
-
+        {/* name field */}
         <FormField
           control={form.control}
           name="name"
@@ -165,7 +169,7 @@ export default function AccountProfile({ user, btnTitle }: Props) {
             </FormItem>
           )}
         />
-
+        {/* username field */}
         <FormField
           control={form.control}
           name="username"
@@ -185,7 +189,7 @@ export default function AccountProfile({ user, btnTitle }: Props) {
             </FormItem>
           )}
         />
-
+        {/* bio field */}
         <FormField
           control={form.control}
           name="bio"
@@ -205,10 +209,11 @@ export default function AccountProfile({ user, btnTitle }: Props) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="bg-primary-500">Submit</Button>
+        {/* submit button */}
+        <Button type="submit" className="bg-primary-500">
+          Submit
+        </Button>
       </form>
     </Form>
-  )
+  );
 }
-
-AccountProfile;
